@@ -1,131 +1,165 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AI Career Guidance Chatbot</title>
+<meta charset="UTF-8">
+<title>AI Career Chatbot</title>
 
 <style>
 body {
+    margin: 0;
     font-family: Arial, sans-serif;
-    background: #f4f6f9;
+    background: #343541;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-.chat-container {
-    width: 400px;
-    background: white;
-    padding: 20px;
+.chat-wrapper {
+    width: 500px;
+    height: 600px;
+    background: #444654;
+    display: flex;
+    flex-direction: column;
     border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    overflow: hidden;
 }
 
-h2 {
+.header {
+    background: #202123;
+    color: white;
+    padding: 15px;
     text-align: center;
-    margin-bottom: 15px;
+    font-weight: bold;
 }
 
-#chat {
-    height: 300px;
+.chat-box {
+    flex: 1;
+    padding: 15px;
     overflow-y: auto;
-    border: 1px solid #ddd;
-    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    max-width: 75%;
+    padding: 10px 14px;
     margin-bottom: 10px;
-    border-radius: 8px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 .user {
-    text-align: right;
-    color: blue;
-    margin: 5px 0;
+    align-self: flex-end;
+    background: #19c37d;
+    color: white;
+    border-bottom-right-radius: 0;
 }
 
 .bot {
-    text-align: left;
-    color: green;
-    margin: 5px 0;
+    align-self: flex-start;
+    background: #3e3f4b;
+    color: white;
+    border-bottom-left-radius: 0;
 }
 
 .input-area {
     display: flex;
+    padding: 10px;
+    background: #202123;
 }
 
 input {
     flex: 1;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 14px;
 }
 
 button {
-    padding: 8px 12px;
-    margin-left: 5px;
-    background: blue;
-    color: white;
+    margin-left: 8px;
+    padding: 10px 15px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
+    background: #19c37d;
+    color: white;
     cursor: pointer;
+    font-weight: bold;
 }
 
 button:hover {
-    background: darkblue;
+    background: #15a96b;
 }
 </style>
 </head>
 
 <body>
 
-<div class="chat-container">
-<h2>AI Career Guidance Chatbot - By Khushbu Singh</h2>
+<div class="chat-wrapper">
+    <div class="header">
+        AI Career Guidance Bot - Khushbu Singh
+    </div>
 
-<div id="chat"></div>
+    <div class="chat-box" id="chatBox"></div>
 
-<div class="input-area">
-<input type="text" id="input" placeholder="Ask me about career..." onkeypress="handleEnter(event)">
-<button onclick="send()">Send</button>
-</div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Ask me anything..." onkeypress="handleEnter(event)">
+        <button onclick="sendMessage()">Send</button>
+    </div>
 </div>
 
 <script>
 function handleEnter(event) {
     if (event.key === "Enter") {
-        send();
+        sendMessage();
     }
 }
 
-function send() {
-    let inputField = document.getElementById("input");
-    let input = inputField.value.trim().toLowerCase();
-    let chat = document.getElementById("chat");
-    let reply = "";
+function sendMessage() {
+    let inputField = document.getElementById("userInput");
+    let message = inputField.value.trim().toLowerCase();
+    if (message === "") return;
 
-    if (input === "") return;
+    addMessage(message, "user");
+    inputField.value = "";
 
-    if (input.includes("hi") || input.includes("hello")) {
-        reply = "Hello 👋 I am your AI Career Guidance Bot. How can I help you?";
-    } 
+    setTimeout(() => {
+        let reply = generateReply(message);
+        addMessage(reply, "bot");
+    }, 500);
+}
+
+function addMessage(text, sender) {
+    let chatBox = document.getElementById("chatBox");
+    let msgDiv = document.createElement("div");
+    msgDiv.classList.add("message", sender);
+    msgDiv.textContent = text;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function generateReply(input) {
+    if (input === "hi" || input === "hello") {
+        return "Hello 👋 I am your AI Career Guidance Bot. How can I help you?";
+    }
     else if (input.includes("ai")) {
-        reply = "AI is a great field! You should learn Python, Machine Learning, and Deep Learning.";
+        return "AI is a powerful field. Learn Python, Machine Learning, and Deep Learning.";
     }
     else if (input.includes("web")) {
-        reply = "For Web Development, learn HTML, CSS, JavaScript, and React.";
-    }
-    else if (input.includes("government") || input.includes("upsc")) {
-        reply = "For UPSC, focus on NCERTs, Current Affairs, and answer writing practice.";
+        return "For Web Development, learn HTML, CSS, JavaScript, and React.";
     }
     else if (input.includes("job")) {
-        reply = "To get a job, build projects, upload on GitHub, and practice DSA.";
+        return "To get a job, build strong projects, upload to GitHub, and practice DSA daily.";
+    }
+    else if (input.includes("language")) {
+        return "Python is best for beginners. JavaScript is best for web development.";
     }
     else {
-        reply = "Sorry, I don't understand. Please ask about AI, Web, Government jobs, or Career.";
+        return "I am still learning. Please ask about AI, Web, Jobs, or Programming.";
     }
-
-    chat.innerHTML += "<p class='user'><b>You:</b> " + input + "</p>";
-    chat.innerHTML += "<p class='bot'><b>Bot:</b> " + reply + "</p>";
-
-    chat.scrollTop = chat.scrollHeight;
-    inputField.value = "";
 }
 </script>
 
