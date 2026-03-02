@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Chatbot UI</title>
+<title>AI Career Guidance Chatbot</title>
 
 <style>
 body {
@@ -17,12 +17,13 @@ body {
     width: 400px;
     background: white;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 h2 {
     text-align: center;
+    margin-bottom: 15px;
 }
 
 #chat {
@@ -31,58 +32,102 @@ h2 {
     border: 1px solid #ddd;
     padding: 10px;
     margin-bottom: 10px;
-    border-radius: 5px;
+    border-radius: 8px;
 }
 
 .user {
     text-align: right;
     color: blue;
+    margin: 5px 0;
 }
 
 .bot {
     text-align: left;
     color: green;
+    margin: 5px 0;
+}
+
+.input-area {
+    display: flex;
 }
 
 input {
-    width: 70%;
+    flex: 1;
     padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
 }
 
 button {
     padding: 8px 12px;
+    margin-left: 5px;
     background: blue;
     color: white;
     border: none;
+    border-radius: 6px;
     cursor: pointer;
 }
-</style>
 
+button:hover {
+    background: darkblue;
+}
+</style>
 </head>
+
 <body>
 
 <div class="chat-container">
-<h2>Chatbot UI Project - By khushbusingh</h2>
+<h2>AI Career Guidance Chatbot - By Khushbu Singh</h2>
 
 <div id="chat"></div>
 
-<input type="text" id="input" placeholder="Type message">
+<div class="input-area">
+<input type="text" id="input" placeholder="Ask me about career..." onkeypress="handleEnter(event)">
 <button onclick="send()">Send</button>
+</div>
 </div>
 
 <script>
+function handleEnter(event) {
+    if (event.key === "Enter") {
+        send();
+    }
+}
+
 function send() {
-    let input = document.getElementById("input").value;
+    let inputField = document.getElementById("input");
+    let input = inputField.value.trim().toLowerCase();
     let chat = document.getElementById("chat");
+    let reply = "";
+
+    if (input === "") return;
+
+    if (input.includes("hi") || input.includes("hello")) {
+        reply = "Hello 👋 I am your AI Career Guidance Bot. How can I help you?";
+    } 
+    else if (input.includes("ai")) {
+        reply = "AI is a great field! You should learn Python, Machine Learning, and Deep Learning.";
+    }
+    else if (input.includes("web")) {
+        reply = "For Web Development, learn HTML, CSS, JavaScript, and React.";
+    }
+    else if (input.includes("government") || input.includes("upsc")) {
+        reply = "For UPSC, focus on NCERTs, Current Affairs, and answer writing practice.";
+    }
+    else if (input.includes("job")) {
+        reply = "To get a job, build projects, upload on GitHub, and practice DSA.";
+    }
+    else {
+        reply = "Sorry, I don't understand. Please ask about AI, Web, Government jobs, or Career.";
+    }
 
     chat.innerHTML += "<p class='user'><b>You:</b> " + input + "</p>";
-    chat.innerHTML += "<p class='bot'><b>Bot:</b> You said " + input + "</p>";
+    chat.innerHTML += "<p class='bot'><b>Bot:</b> " + reply + "</p>";
 
-    document.getElementById("input").value = "";
+    chat.scrollTop = chat.scrollHeight;
+    inputField.value = "";
 }
 </script>
 
 </body>
 </html>
-
-
