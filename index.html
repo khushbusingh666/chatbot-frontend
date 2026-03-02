@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot UI</title>
+</head>
+<body>
+
+<h2>Chatbot UI Project - By khushbusingh</h2>
+
+<div id="chat"></div>
+
+<input type="text" id="input" placeholder="Type message">
+<button onclick="send()">Send</button>
+
+<script>
+function send() {
+    let input = document.getElementById("input").value;
+    let chat = document.getElementById("chat");
+
+    chat.innerHTML += "<p><b>You:</b> " + input + "</p>";
+    chat.innerHTML += "<p><b>Bot:</b> You said " + input + "</p>";
+
+    document.getElementById("input").value = "";
+}
+</script>
+
+</body>
+</html>
