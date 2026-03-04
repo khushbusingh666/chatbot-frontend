@@ -1,166 +1,185 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>AI Career Chatbot</title>
+    <title>AI Career Guidance Bot</title>
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #343541;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e2f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-.chat-wrapper {
-    width: 500px;
-    height: 600px;
-    background: #444654;
-    display: flex;
-    flex-direction: column;
-    border-radius: 12px;
-    overflow: hidden;
-}
+        .chat-container {
+            width: 450px;
+            background: #2a2a40;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.4);
+        }
 
-.header {
-    background: #202123;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
-}
+        .header {
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            background: #222233;
+            color: white;
+            font-size: 16px;
+        }
 
-.chat-box {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-}
+        #chatbox {
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
 
-.message {
-    max-width: 75%;
-    padding: 10px 14px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    font-size: 14px;
-    line-height: 1.4;
-}
+        .message {
+            padding: 10px;
+            margin: 6px 0;
+            border-radius: 10px;
+            max-width: 75%;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
 
-.user {
-    align-self: flex-end;
-    background: #19c37d;
-    color: white;
-    border-bottom-right-radius: 0;
-}
+        .user {
+            background: #4caf50;
+            color: white;
+            align-self: flex-end;
+        }
 
-.bot {
-    align-self: flex-start;
-    background: #3e3f4b;
-    color: white;
-    border-bottom-left-radius: 0;
-}
+        .bot {
+            background: #3a3a55;
+            color: white;
+            align-self: flex-start;
+        }
 
-.input-area {
-    display: flex;
-    padding: 10px;
-    background: #202123;
-}
+        .timestamp {
+            font-size: 10px;
+            opacity: 0.6;
+            margin-top: 3px;
+        }
 
-input {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    outline: none;
-    font-size: 14px;
-}
+        .input-area {
+            display: flex;
+            padding: 10px;
+            background: #222233;
+        }
 
-button {
-    margin-left: 8px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    background: #19c37d;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-}
+        #userInput {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
 
-button:hover {
-    background: #15a96b;
-}
-</style>
+        button {
+            margin-left: 10px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: none;
+            background: #4caf50;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="chat-wrapper">
+<div class="chat-container">
     <div class="header">
-        AI Career Guidance Bot - Khushbu Singh
+        AI Career Guidance Bot
     </div>
 
-    <div class="chat-box" id="chatBox"></div>
+    <div id="chatbox"></div>
 
     <div class="input-area">
-        <input type="text" id="userInput" placeholder="Ask me anything..." onkeypress="handleEnter(event)">
+        <input type="text" id="userInput" placeholder="Ask your career question...">
         <button onclick="sendMessage()">Send</button>
     </div>
 </div>
 
 <script>
-function handleEnter(event) {
-    if (event.key === "Enter") {
-        sendMessage();
-    }
+
+function getTime() {
+    let now = new Date();
+    return now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 }
 
 function sendMessage() {
-    let inputField = document.getElementById("userInput");
-    let message = inputField.value.trim().toLowerCase();
-    if (message === "") return;
 
-    addMessage(message, "user");
-    inputField.value = "";
+    let input = document.getElementById("userInput");
+    let message = input.value.trim();
+    if(message === "") return;
 
-    setTimeout(() => {
-        let reply = generateReply(message);
-        addMessage(reply, "bot");
-    }, 500);
+    let chatbox = document.getElementById("chatbox");
+
+    // User message
+    chatbox.innerHTML += `
+        <div class="message user">
+            ${message}
+            <div class="timestamp">${getTime()}</div>
+        </div>
+    `;
+
+    // Typing indicator
+    chatbox.innerHTML += `
+        <div class="message bot" id="typing">
+            AI is typing...
+        </div>
+    `;
+
+    chatbox.scrollTop = chatbox.scrollHeight;
+
+    fetch("http://127.0.0.1:5000/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({message: message})
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        document.getElementById("typing").remove();
+
+        chatbox.innerHTML += `
+            <div class="message bot">
+                ${data.reply}
+                <div class="timestamp">${getTime()}</div>
+            </div>
+        `;
+
+        chatbox.scrollTop = chatbox.scrollHeight;
+    });
+
+    input.value = "";
 }
 
-function addMessage(text, sender) {
-    let chatBox = document.getElementById("chatBox");
-    let msgDiv = document.createElement("div");
-    msgDiv.classList.add("message", sender);
-    msgDiv.textContent = text;
-    chatBox.appendChild(msgDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
+// Enter key support
+document.getElementById("userInput")
+.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+});
 
-function generateReply(input) {
-    if (input === "hi" || input === "hello") {
-        return "Hello 👋 I am your AI Career Guidance Bot. How can I help you?";
-    }
-    else if (input.includes("ai")) {
-        return "AI is a powerful field. Learn Python, Machine Learning, and Deep Learning.";
-    }
-    else if (input.includes("web")) {
-        return "For Web Development, learn HTML, CSS, JavaScript, and React.";
-    }
-    else if (input.includes("job")) {
-        return "To get a job, build strong projects, upload to GitHub, and practice DSA daily.";
-    }
-    else if (input.includes("language")) {
-        return "Python is best for beginners. JavaScript is best for web development.";
-    }
-    else {
-        return "I am still learning. Please ask about AI, Web, Jobs, or Programming.";
-    }
-}
 </script>
 
 </body>
